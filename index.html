@@ -1,0 +1,715 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--green:#0F6E56;--green-light:#E1F5EE;--green-mid:#1D9E75;}
+.app{display:flex;height:100vh;min-height:700px;background:var(--surface-0);overflow:hidden;font-family:var(--font-sans);}
+/* SIDEBAR */
+.sidebar{width:210px;background:var(--surface-1);border-right:0.5px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.logo-area{padding:14px 14px 10px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:10px;}
+.logo-circle{width:38px;height:38px;border-radius:10px;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.logo-circle span{color:#fff;font-size:14px;font-weight:500;}
+.logo-text .lt{font-size:12px;font-weight:500;color:var(--text-primary);line-height:1.3;}
+.logo-text .ls{font-size:10px;color:var(--text-muted);}
+.nav-section{padding:8px 10px 2px;font-size:10px;color:var(--text-muted);font-weight:500;letter-spacing:.5px;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;font-size:12px;color:var(--text-secondary);border-radius:6px;margin:1px 6px;transition:all .15s;}
+.nav-item:hover{background:var(--surface-2);color:var(--text-primary);}
+.nav-item.active{background:var(--green-light);color:var(--green);font-weight:500;}
+.nav-item i{font-size:15px;flex-shrink:0;}
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{padding:0 20px;height:48px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);flex-shrink:0;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.topbar-logo{width:28px;height:28px;border-radius:6px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:500;}
+.topbar-title{font-size:14px;font-weight:500;color:var(--text-primary);}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.user-badge{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:var(--radius);background:var(--surface-1);border:0.5px solid var(--border);font-size:12px;cursor:pointer;}
+.user-dot{width:8px;height:8px;border-radius:50%;background:var(--green);}
+.content{flex:1;overflow-y:auto;padding:18px 20px;}
+.page{display:none;}.page.active{display:block;}
+/* COMMON */
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.section-title{font-size:14px;font-weight:500;color:var(--text-primary);}
+.btn-primary{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:var(--green);color:#fff;border-radius:var(--radius);font-size:12px;cursor:pointer;border:none;}
+.btn-secondary{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:transparent;color:var(--text-secondary);border-radius:var(--radius);font-size:12px;cursor:pointer;border:0.5px solid var(--border-strong);}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+.stat-card{background:var(--surface-1);border-radius:var(--radius);padding:12px 14px;border:0.5px solid var(--border);}
+.stat-label{font-size:11px;color:var(--text-muted);margin-bottom:5px;}
+.stat-value{font-size:20px;font-weight:500;color:var(--text-primary);}
+.stat-sub{font-size:10px;color:var(--text-success);margin-top:3px;}
+.card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.badge{font-size:10px;padding:3px 8px;border-radius:20px;}
+.badge-active{background:var(--bg-success);color:var(--text-success);}
+.badge-new{background:var(--bg-accent);color:var(--text-accent);}
+.badge-ongoing{background:var(--bg-warning);color:var(--text-warning);}
+/* TABLE */
+.tbl-wrap{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{padding:9px 12px;text-align:left;font-size:11px;font-weight:500;color:var(--text-muted);border-bottom:0.5px solid var(--border);background:var(--surface-1);}
+td{padding:9px 12px;border-bottom:0.5px solid var(--border);color:var(--text-primary);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--surface-1);}
+.amt-in{color:var(--text-success);font-weight:500;}
+.amt-out{color:var(--text-danger);font-weight:500;}
+/* PROJECT */
+.proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.proj-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:border-color .15s;}
+.proj-card:hover{border-color:var(--green);}
+.proj-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.proj-name{font-size:13px;font-weight:500;color:var(--text-primary);flex:1;padding-right:8px;line-height:1.3;}
+.prog-bg{background:var(--surface-1);height:4px;border-radius:2px;margin:8px 0 4px;}
+.prog-fill{height:4px;border-radius:2px;background:var(--green);}
+.proj-detail{display:none;}.proj-detail.open{display:block;}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:14px;padding:6px 10px;border-radius:var(--radius);border:0.5px solid var(--border);}
+/* FINANCE */
+.fin-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.fin-tab{padding:6px 14px;border-radius:var(--radius);font-size:12px;cursor:pointer;border:0.5px solid var(--border);background:var(--surface-2);color:var(--text-secondary);}
+.fin-tab.active{background:var(--green-light);color:var(--green);border-color:var(--green);}
+.fin-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.fin-box{background:var(--surface-1);border-radius:var(--radius);padding:12px 14px;border:0.5px solid var(--border);}
+.fin-lbl{font-size:11px;color:var(--text-muted);margin-bottom:4px;}
+.fin-val{font-size:18px;font-weight:500;}
+.report-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.rep-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;justify-content:space-between;}
+.rep-info .rep-title{font-size:13px;font-weight:500;color:var(--text-primary);}
+.rep-info .rep-sub{font-size:11px;color:var(--text-muted);margin-top:3px;}
+/* MEDIA */
+.folder-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.folder-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;text-align:center;transition:border-color .15s;}
+.folder-card:hover{border-color:var(--green);}
+.folder-card i{font-size:28px;color:#EF9F27;margin-bottom:6px;}
+.folder-name{font-size:12px;color:var(--text-primary);font-weight:500;}
+.folder-count{font-size:10px;color:var(--text-muted);}
+.media-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.media-item{background:var(--surface-1);border:0.5px solid var(--border);border-radius:8px;padding:12px;text-align:center;}
+.media-icon{font-size:24px;margin-bottom:6px;}
+.media-name{font-size:11px;color:var(--text-primary);word-break:break-word;}
+.media-size{font-size:10px;color:var(--text-muted);}
+/* SETTINGS */
+.settings-section{margin-bottom:20px;}
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.role-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:14px;}
+.role-name{font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px;}
+.role-sub{font-size:11px;color:var(--text-muted);margin-bottom:10px;}
+.perm-list{display:flex;flex-direction:column;gap:5px;}
+.perm-item{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text-secondary);}
+.perm-check{width:14px;height:14px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;}
+.perm-yes{background:var(--bg-success);color:var(--text-success);}
+.perm-no{background:var(--surface-1);color:var(--text-muted);border:0.5px solid var(--border);}
+.user-table-wrap{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;}
+/* DEPARTMENTS */
+.dept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.dept-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:border-color .15s;}
+.dept-card:hover{border-color:var(--green);}
+.dept-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:20px;}
+.dept-name{font-size:13px;font-weight:500;color:var(--text-primary);}
+.dept-sub{font-size:11px;color:var(--text-muted);margin-top:3px;}
+.dept-stats{display:flex;gap:12px;margin-top:10px;}
+.dept-stat{font-size:11px;color:var(--text-secondary);}
+/* FILES */
+.file-toolbar{display:flex;gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap;}
+.file-path{font-size:12px;color:var(--text-muted);flex:1;}
+.files-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.file-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:10px;padding:12px;text-align:center;position:relative;}
+.file-card i{font-size:26px;margin-bottom:6px;}
+.file-nm{font-size:11px;color:var(--text-primary);word-break:break-word;font-weight:500;}
+.file-dt{font-size:10px;color:var(--text-muted);margin-top:2px;}
+/* MODAL */
+.modal-bg{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:200;}
+.modal{background:var(--surface-2);border-radius:12px;padding:20px;width:380px;border:0.5px solid var(--border);max-height:80vh;overflow-y:auto;}
+.modal-title{font-size:14px;font-weight:500;margin-bottom:14px;color:var(--text-primary);}
+.fg{margin-bottom:12px;}
+.fl{font-size:11px;color:var(--text-muted);margin-bottom:4px;display:block;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;}
+.btn-cancel{padding:7px 14px;border-radius:var(--radius);font-size:12px;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--text-secondary);}
+.btn-save{padding:7px 14px;border-radius:var(--radius);font-size:12px;cursor:pointer;border:none;background:var(--green);color:#fff;}
+.upload-zone{border:1.5px dashed var(--border-strong);border-radius:var(--radius);padding:20px;text-align:center;color:var(--text-muted);font-size:12px;cursor:pointer;margin-bottom:12px;}
+.upload-zone:hover{border-color:var(--green);color:var(--green);}
+/* ACTIVITY */
+.act-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:12px;}
+.act-item:last-child{border-bottom:none;}
+.act-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.act-green{background:var(--fill-success);}
+.act-blue{background:var(--fill-accent);}
+.act-amber{background:#EF9F27;}
+.act-red{background:var(--fill-danger);}
+/* TAGS */
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.tag{font-size:10px;padding:3px 8px;border-radius:20px;background:var(--surface-1);color:var(--text-secondary);border:0.5px solid var(--border);}
+/* DEPT DASHBOARD */
+.dept-detail{display:none;}.dept-detail.open{display:block;}
+</style>
+
+<div class="app" id="app">
+<div class="sidebar">
+  <div class="logo-area">
+    <div class="logo-circle"><span>MF</span></div>
+    <div class="logo-text"><div class="lt">Muazzam Foundation</div><div class="ls">Management System</div></div>
+  </div>
+  <div class="nav-section">Main</div>
+  <div class="nav-item active" onclick="showPage('dashboard',this)"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Dashboard</div>
+  <div class="nav-item" onclick="showPage('departments',this)"><i class="ti ti-building" aria-hidden="true"></i>Departments</div>
+  <div class="nav-section">Operations</div>
+  <div class="nav-item" onclick="showPage('projects',this)"><i class="ti ti-clipboard-list" aria-hidden="true"></i>Projects</div>
+  <div class="nav-item" onclick="showPage('finance',this)"><i class="ti ti-coin" aria-hidden="true"></i>Finance</div>
+  <div class="nav-item" onclick="showPage('staff',this)"><i class="ti ti-users" aria-hidden="true"></i>Staff</div>
+  <div class="nav-item" onclick="showPage('media',this)"><i class="ti ti-photo" aria-hidden="true"></i>Media Library</div>
+  <div class="nav-item" onclick="showPage('files',this)"><i class="ti ti-folder" aria-hidden="true"></i>Files & Docs</div>
+  <div class="nav-section">System</div>
+  <div class="nav-item" onclick="showPage('reports',this)"><i class="ti ti-file-analytics" aria-hidden="true"></i>Reports</div>
+  <div class="nav-item" onclick="showPage('settings',this)"><i class="ti ti-settings" aria-hidden="true"></i>Settings</div>
+</div>
+
+<div class="main">
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">MF</div>
+    <div class="topbar-title" id="page-title">Dashboard</div>
+  </div>
+  <div class="topbar-right">
+    <div class="user-badge" onclick="showPage('settings',document.querySelector('.nav-item:last-child'))"><div class="user-dot"></div><span id="cur-user">Admin — Full Access</span><i class="ti ti-chevron-down" style="font-size:12px" aria-hidden="true"></i></div>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">Donations this month</div><div class="stat-value">PKR 8.4L</div><div class="stat-sub">↑ +12% vs last month</div></div>
+    <div class="stat-card"><div class="stat-label">Active projects</div><div class="stat-value">21</div><div class="stat-sub" style="color:var(--green)">All running</div></div>
+    <div class="stat-card"><div class="stat-label">Families served (June)</div><div class="stat-value">1,240</div><div class="stat-sub">↑ +8% this month</div></div>
+    <div class="stat-card"><div class="stat-label">Departments</div><div class="stat-value" id="dept-count">6</div><div class="stat-sub" style="color:var(--text-muted)">Active</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="section-hd"><div class="section-title">Recent activity</div></div>
+      <div class="act-item"><div class="act-dot act-green"></div><div style="flex:1">340 food packs distributed — June Ramadan campaign</div><div style="font-size:10px;color:var(--text-muted)">2h ago</div></div>
+      <div class="act-item"><div class="act-dot act-blue"></div><div style="flex:1">New donation PKR 25,000 (Zakat) received</div><div style="font-size:10px;color:var(--text-muted)">4h ago</div></div>
+      <div class="act-item"><div class="act-dot act-amber"></div><div style="flex:1">Hospital OPD — 87 patients today</div><div style="font-size:10px;color:var(--text-muted)">6h ago</div></div>
+      <div class="act-item"><div class="act-dot act-green"></div><div style="flex:1">3 water pumps installed — Chakwal</div><div style="font-size:10px;color:var(--text-muted)">Yesterday</div></div>
+      <div class="act-item"><div class="act-dot act-blue"></div><div style="flex:1">18 women completed vocational training</div><div style="font-size:10px;color:var(--text-muted)">Yesterday</div></div>
+    </div>
+    <div class="card">
+      <div class="section-hd">
+        <div class="section-title">Departments overview</div>
+        <button class="btn-primary" onclick="openModal('add-dept')"><i class="ti ti-plus" aria-hidden="true"></i>New dept</button>
+      </div>
+      <div id="dash-dept-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DEPARTMENTS -->
+<div class="page" id="page-departments">
+  <div class="section-hd">
+    <div class="section-title">All departments</div>
+    <button class="btn-primary" onclick="openModal('add-dept')"><i class="ti ti-plus" aria-hidden="true"></i>Add department</button>
+  </div>
+  <div class="dept-grid" id="dept-grid"></div>
+</div>
+
+<!-- PROJECTS -->
+<div class="page" id="page-projects">
+  <div id="proj-list-view">
+    <div class="section-hd">
+      <div class="section-title">All projects</div>
+      <button class="btn-primary" onclick="openModal('add-proj')"><i class="ti ti-plus" aria-hidden="true"></i>New project</button>
+    </div>
+    <div class="btn-row" id="proj-filters"></div>
+    <div class="proj-grid" id="proj-grid"></div>
+  </div>
+  <div id="proj-detail-view" style="display:none">
+    <div class="back-btn" onclick="closeDetail()"><i class="ti ti-arrow-left" aria-hidden="true"></i>Back to projects</div>
+    <div id="proj-detail-content"></div>
+  </div>
+</div>
+
+<!-- FINANCE -->
+<div class="page" id="page-finance">
+  <div class="fin-tabs">
+    <div class="fin-tab active" onclick="finTab('transactions',this)">Transactions</div>
+    <div class="fin-tab" onclick="finTab('import',this)">Import Excel</div>
+    <div class="fin-tab" onclick="finTab('reports',this)">Download Reports</div>
+    <div class="fin-tab" onclick="finTab('sheet',this)">Spreadsheet View</div>
+  </div>
+  <div id="fin-transactions">
+    <div class="fin-sum">
+      <div class="fin-box"><div class="fin-lbl">Donations (June)</div><div class="fin-val" style="color:var(--text-success)">+ PKR 8,40,000</div></div>
+      <div class="fin-box"><div class="fin-lbl">Expenses (June)</div><div class="fin-val" style="color:var(--text-danger)">− PKR 6,12,000</div></div>
+      <div class="fin-box"><div class="fin-lbl">Net balance</div><div class="fin-val">PKR 2,28,000</div></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="openModal('add-txn')"><i class="ti ti-plus" aria-hidden="true"></i>Add transaction</button>
+      <button class="btn-secondary" onclick="downloadReport('all','all')"><i class="ti ti-download" aria-hidden="true"></i>Export all</button>
+    </div>
+    <div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Project</th><th>Amount</th></tr></thead><tbody id="fin-body"></tbody></table></div>
+  </div>
+  <div id="fin-import" style="display:none">
+    <div class="card">
+      <div class="section-title" style="margin-bottom:12px">Import from Excel / CSV</div>
+      <div class="upload-zone" onclick="simulateUpload('excel')"><i class="ti ti-file-spreadsheet" style="font-size:28px;display:block;margin-bottom:6px" aria-hidden="true"></i>Click to upload Excel (.xlsx) or CSV file<br><span style="font-size:10px">Columns: Date, Description, Type, Project, Amount</span></div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Expected format:</div>
+      <div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Project</th><th>Amount</th></tr></thead><tbody><tr><td>2026-06-28</td><td>Zakat donation</td><td>Donation (Zakat)</td><td>General</td><td>50000</td></tr></tbody></table></div>
+      <div id="upload-status"></div>
+    </div>
+  </div>
+  <div id="fin-reports" style="display:none">
+    <div class="section-title" style="margin-bottom:14px">Download finance reports</div>
+    <div class="report-grid" id="report-grid"></div>
+  </div>
+  <div id="fin-sheet" style="display:none">
+    <div class="card" style="padding:12px">
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px">Spreadsheet view — June 2026</div>
+      <div style="overflow-x:auto;">
+        <table style="min-width:600px" id="sheet-table">
+          <thead><tr style="background:var(--surface-1)"><th style="width:110px">Date</th><th>Description</th><th>Type</th><th>Project</th><th>Amount (PKR)</th><th>Balance</th></tr></thead>
+          <tbody id="sheet-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STAFF -->
+<div class="page" id="page-staff">
+  <div class="section-hd">
+    <div class="section-title">Staff & volunteers</div>
+    <button class="btn-primary" onclick="openModal('add-staff')"><i class="ti ti-plus" aria-hidden="true"></i>Add member</button>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px" id="staff-grid"></div>
+</div>
+
+<!-- MEDIA -->
+<div class="page" id="page-media">
+  <div class="section-hd">
+    <div class="section-title">Media library</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-secondary" onclick="openModal('add-folder')"><i class="ti ti-folder-plus" aria-hidden="true"></i>New folder</button>
+      <button class="btn-primary" onclick="openModal('upload-media')"><i class="ti ti-upload" aria-hidden="true"></i>Upload media</button>
+    </div>
+  </div>
+  <div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:10px">Folders</div>
+  <div class="folder-grid" id="folder-grid"></div>
+  <div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:10px">Tags</div>
+  <div class="tag-row" id="media-tags"></div>
+  <div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin:14px 0 10px">Recent media</div>
+  <div class="media-grid" id="media-grid"></div>
+</div>
+
+<!-- FILES -->
+<div class="page" id="page-files">
+  <div class="file-toolbar">
+    <button class="btn-secondary" onclick="openModal('add-folder')"><i class="ti ti-folder-plus" aria-hidden="true"></i>New folder</button>
+    <button class="btn-secondary" onclick="openModal('new-file')"><i class="ti ti-file-plus" aria-hidden="true"></i>New file</button>
+    <button class="btn-primary" onclick="openModal('upload-file')"><i class="ti ti-upload" aria-hidden="true"></i>Upload file</button>
+    <button class="btn-secondary" onclick="openModal('upload-folder')"><i class="ti ti-folder-up" aria-hidden="true"></i>Upload folder</button>
+    <div class="file-path">/ Foundation Files</div>
+  </div>
+  <div class="files-grid" id="files-grid"></div>
+</div>
+
+<!-- REPORTS -->
+<div class="page" id="page-reports">
+  <div class="section-title" style="margin-bottom:16px">Download reports — all departments</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="section-title" style="margin-bottom:12px"><i class="ti ti-clipboard-list" style="color:var(--green)" aria-hidden="true"></i> Projects reports</div>
+      <div id="proj-report-list"></div>
+    </div>
+    <div class="card">
+      <div class="section-title" style="margin-bottom:12px"><i class="ti ti-coin" style="color:var(--green)" aria-hidden="true"></i> Finance reports</div>
+      <div id="fin-report-list"></div>
+    </div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="section-title" style="margin-bottom:12px"><i class="ti ti-users" style="color:var(--green)" aria-hidden="true"></i> Staff reports</div>
+      <div id="staff-report-list"></div>
+    </div>
+    <div class="card">
+      <div class="section-title" style="margin-bottom:12px"><i class="ti ti-building" style="color:var(--green)" aria-hidden="true"></i> Department reports</div>
+      <div id="dept-report-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <div class="fin-tabs">
+    <div class="fin-tab active" onclick="settTab('roles',this)">Roles & Access</div>
+    <div class="fin-tab" onclick="settTab('users',this)">User IDs</div>
+    <div class="fin-tab" onclick="settTab('org',this)">Organization</div>
+  </div>
+  <div id="sett-roles">
+    <div class="section-hd" style="margin-bottom:14px">
+      <div class="section-title">Access roles</div>
+    </div>
+    <div class="role-grid" id="role-grid"></div>
+  </div>
+  <div id="sett-users" style="display:none">
+    <div class="section-hd">
+      <div class="section-title">User accounts</div>
+      <button class="btn-primary" onclick="openModal('add-user')"><i class="ti ti-plus" aria-hidden="true"></i>Create user</button>
+    </div>
+    <div class="user-table-wrap"><table><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Department</th><th>Status</th></tr></thead><tbody id="users-body"></tbody></table></div>
+  </div>
+  <div id="sett-org" style="display:none">
+    <div class="card">
+      <div class="section-title" style="margin-bottom:12px">Organization details</div>
+      <div class="form-row" style="margin-bottom:10px">
+        <div class="fg"><label class="fl">Organization name</label><input type="text" value="Muazzam Foundation"></div>
+        <div class="fg"><label class="fl">Registration number</label><input type="text" value="MF-2003-PKR"></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label class="fl">Contact email</label><input type="text" value="info@muazzamfoundation.org"></div>
+        <div class="fg"><label class="fl">Phone</label><input type="text" value="+92-xxx-xxxxxxx"></div>
+      </div>
+      <button class="btn-primary" style="margin-top:10px">Save changes</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- content -->
+</div><!-- main -->
+
+<!-- MODALS -->
+<div class="modal-bg" id="modal" style="display:none">
+  <div class="modal" id="modal-inner"></div>
+</div>
+
+</div><!-- app -->
+
+<script>
+// DATA
+let departments=[
+  {id:1,name:"Healthcare",icon:"ti-heart-rate-monitor",color:"#FAECE7",tc:"#712B13",staff:8,projects:1,budget:"PKR 2.5L"},
+  {id:2,name:"Education",icon:"ti-school",color:"#E6F1FB",tc:"#0C447C",staff:12,projects:6,budget:"PKR 1.8L"},
+  {id:3,name:"Finance",icon:"ti-coin",color:"#EAF3DE",tc:"#27500A",staff:3,projects:0,budget:"PKR 8.4L"},
+  {id:4,name:"Welfare",icon:"ti-hand-heart",color:"#FAEEDA",tc:"#633806",staff:6,projects:9,budget:"PKR 1.2L"},
+  {id:5,name:"School Admin",icon:"ti-building",color:"#EEEDFE",tc:"#3C3489",staff:5,projects:1,budget:"PKR 80K"},
+  {id:6,name:"Relief",icon:"ti-first-aid-kit",color:"#FBEAF0",tc:"#72243E",staff:4,projects:4,budget:"PKR 1.1L"},
+];
+
+let projects=[
+  {id:1,name:"Al Qasim Institute — Special Children",cat:"education",dept:"Education",status:"active",prog:72,budget:180000,spent:129600,items:[{name:"Speech therapy sessions",cost:45000},{name:"Physiotherapy equipment",cost:30000},{name:"Computer lab",cost:54600}],tasks:["Monthly parent meeting","New intake assessment","Equipment maintenance"]},
+  {id:2,name:"Captain Muazzam Hospital",cat:"healthcare",dept:"Healthcare",status:"active",prog:85,budget:250000,spent:212500,items:[{name:"Medicines & pharmacy",cost:80000},{name:"Lab equipment",cost:60000},{name:"Staff salaries",cost:72500}],tasks:["Monthly OPD report","Dialysis machine service","Eye camp — July"]},
+  {id:3,name:"Al Sadiq Vocational Institute",cat:"education",dept:"Education",status:"active",prog:68,budget:120000,spent:81600,items:[{name:"Sewing machines",cost:35000},{name:"Fabric & materials",cost:24000},{name:"Trainer fees",cost:22600}],tasks:["New batch enrollment","Certificate distribution","Sewing machine distribution"]},
+  {id:4,name:"Multiskill Hub Center",cat:"education",dept:"Education",status:"active",prog:60,budget:150000,spent:90000,items:[{name:"Computer hardware",cost:50000},{name:"Internet & utilities",cost:15000},{name:"Trainer fees",cost:25000}],tasks:["IELTS batch start","Freelancing course completion","New batch admission"]},
+  {id:5,name:"Welfare School",cat:"education",dept:"School Admin",status:"active",prog:78,budget:200000,spent:156000,items:[{name:"Teacher salaries",cost:90000},{name:"School supplies",cost:36000},{name:"Infrastructure",cost:30000}],tasks:["Term exams","Uniform distribution","Annual result day"]},
+  {id:6,name:"Water Project",cat:"welfare",dept:"Welfare",status:"ongoing",prog:45,budget:300000,spent:135000,items:[{name:"Solar pumps",cost:80000},{name:"Water wells",cost:35000},{name:"Filtration plants",cost:20000}],tasks:["Chakwal 3 pumps installation","Mardan survey","Report to donors"]},
+  {id:7,name:"Sponsor an Orphan",cat:"welfare",dept:"Welfare",status:"active",prog:88,budget:400000,spent:352000,items:[{name:"Monthly stipends",cost:180000},{name:"Education fees",cost:120000},{name:"Healthcare",cost:52000}],tasks:["New orphan intake","Eid gift distribution","Monthly check-in visits"]},
+  {id:8,name:"Ramadan Food Packs",cat:"relief",dept:"Relief",status:"active",prog:95,budget:500000,spent:475000,items:[{name:"Flour & rice",cost:200000},{name:"Oil & sugar",cost:130000},{name:"Lentils & tea",cost:145000}],tasks:["Final distribution report","Donor acknowledgement","Next year planning"]},
+  {id:9,name:"Eid Gift for Orphans",cat:"relief",dept:"Relief",status:"active",prog:80,budget:150000,spent:120000,items:[{name:"New clothes",cost:60000},{name:"Shoes & toys",cost:35000},{name:"Gift packs & cash",cost:25000}],tasks:["Purchase gifts","Coordinate with orphanages","Distribution day — Eid"]},
+  {id:10,name:"Al Fazil-E-Sadiq Orphanage",cat:"welfare",dept:"Welfare",status:"new",prog:15,budget:5000000,spent:750000,items:[{name:"Land & construction",cost:600000},{name:"Furniture & fittings",cost:100000},{name:"Initial setup",cost:50000}],tasks:["Construction phase 1","Donor fundraising campaign","Staff recruitment"]},
+];
+
+let transactions=[
+  {date:"2026-06-28",desc:"Zakat donation — donor family",type:"Donation (Zakat)",proj:"General",amount:50000,dir:"in"},
+  {date:"2026-06-27",desc:"Hospital medicines purchase",type:"Expense",proj:"Hospital",amount:28000,dir:"out"},
+  {date:"2026-06-26",desc:"Sadaqah — anonymous donor",type:"Donation (Sadaqah)",proj:"General",amount:15000,dir:"in"},
+  {date:"2026-06-25",desc:"Food packs — 100 families",type:"Expense",proj:"Food Packs",amount:45000,dir:"out"},
+  {date:"2026-06-24",desc:"Donation — school sponsor",type:"Donation (General)",proj:"School",amount:30000,dir:"in"},
+  {date:"2026-06-23",desc:"Water pump installation",type:"Expense",proj:"Water Project",amount:22000,dir:"out"},
+  {date:"2026-06-22",desc:"Orphan monthly stipends",type:"Expense",proj:"Orphan Care",amount:18000,dir:"out"},
+  {date:"2026-06-20",desc:"Corporate Zakat donation",type:"Donation (Zakat)",proj:"General",amount:200000,dir:"in"},
+];
+
+let staff=[
+  {name:"Ahmed Raza",role:"Hospital Director",dept:"Healthcare",access:"Manager",color:"#FAECE7",tc:"#712B13",ic:"AR"},
+  {name:"Fatima Malik",role:"Head Teacher",dept:"Education",access:"Manager",color:"#E6F1FB",tc:"#0C447C",ic:"FM"},
+  {name:"Muhammad Ali",role:"Finance Manager",dept:"Finance",access:"Finance",color:"#EAF3DE",tc:"#27500A",ic:"MA"},
+  {name:"Zainab Khan",role:"Social Media",dept:"Communications",access:"Staff",color:"#FBEAF0",tc:"#72243E",ic:"ZK"},
+  {name:"Umar Farooq",role:"Water Projects Lead",dept:"Welfare",access:"Manager",color:"#E1F5EE",tc:"#085041",ic:"UF"},
+  {name:"Sara Baig",role:"Vocational Trainer",dept:"Education",access:"Staff",color:"#EEEDFE",tc:"#3C3489",ic:"SB"},
+  {name:"Tariq Hussain",role:"Orphan Care Officer",dept:"Welfare",access:"Staff",color:"#FAECE7",tc:"#712B13",ic:"TH"},
+  {name:"Hina Noor",role:"Hospital Nurse",dept:"Healthcare",access:"Staff",color:"#E6F1FB",tc:"#0C447C",ic:"HN"},
+  {name:"Bilal Sheikh",role:"IT Coordinator",dept:"Operations",access:"Staff",color:"#F1EFE8",tc:"#444441",ic:"BS"},
+];
+
+let users=[
+  {name:"Muazzam Admin",username:"admin@mf",role:"Admin",dept:"All",status:"active"},
+  {name:"Ahmed Raza",username:"ahmed.raza@mf",role:"Manager",dept:"Healthcare",status:"active"},
+  {name:"Muhammad Ali",username:"m.ali@mf",role:"Finance",dept:"Finance",status:"active"},
+  {name:"Fatima Malik",username:"fatima@mf",role:"Manager",dept:"Education",status:"active"},
+  {name:"Sara Baig",username:"sara@mf",role:"Staff",dept:"Education",status:"active"},
+];
+
+let folders=[
+  {name:"Ramadan 2026",count:24,icon:"ti-folder"},
+  {name:"Hospital Photos",count:18,icon:"ti-folder"},
+  {name:"School Events",count:31,icon:"ti-folder"},
+  {name:"Water Projects",count:12,icon:"ti-folder"},
+  {name:"Orphan Programme",count:20,icon:"ti-folder"},
+  {name:"Vocational Training",count:15,icon:"ti-folder"},
+  {name:"Eid Gifts",count:9,icon:"ti-folder"},
+  {name:"Disaster Relief",count:7,icon:"ti-folder"},
+];
+let mediaTags=["Ramadan","Hospital","School","Orphans","Water","Eid","Vocational","Relief","Donations","Events"];
+let mediaFiles=[
+  {name:"ramadan_dist.jpg",type:"image",icon:"ti-photo",size:"2.1 MB"},
+  {name:"hospital_opd.jpg",type:"image",icon:"ti-photo",size:"1.8 MB"},
+  {name:"water_pump.jpg",type:"image",icon:"ti-photo",size:"3.2 MB"},
+  {name:"school_uniforms.jpg",type:"image",icon:"ti-photo",size:"2.4 MB"},
+  {name:"eid_gifts_video.mp4",type:"video",icon:"ti-video",size:"45 MB"},
+  {name:"orphan_care.jpg",type:"image",icon:"ti-photo",size:"1.9 MB"},
+  {name:"vocational_cert.jpg",type:"image",icon:"ti-photo",size:"1.1 MB"},
+  {name:"masjid_project.jpg",type:"image",icon:"ti-photo",size:"2.7 MB"},
+];
+
+let filesList=[
+  {name:"Project Reports",type:"folder",icon:"ti-folder",date:"Jun 20"},
+  {name:"Finance Documents",type:"folder",icon:"ti-folder",date:"Jun 18"},
+  {name:"Donor Records",type:"folder",icon:"ti-folder",date:"Jun 15"},
+  {name:"Legal Documents",type:"folder",icon:"ti-folder",date:"May 30"},
+  {name:"Monthly Report June 2026.pdf",type:"pdf",icon:"ti-file-type-pdf",date:"Jun 28"},
+  {name:"Finance Summary Q2.xlsx",type:"excel",icon:"ti-file-spreadsheet",date:"Jun 25"},
+  {name:"Staff List 2026.docx",type:"word",icon:"ti-file-text",date:"Jun 22"},
+  {name:"Water Project Proposal.pdf",type:"pdf",icon:"ti-file-type-pdf",date:"Jun 10"},
+];
+
+const roles=[
+  {name:"Admin",color:"#FAECE7",tc:"#712B13",perms:{Dashboard:1,Projects:1,Finance:1,Staff:1,"Media Library":1,"Files & Docs":1,Reports:1,Settings:1}},
+  {name:"Manager",color:"#E6F1FB",tc:"#0C447C",perms:{Dashboard:1,Projects:1,Finance:0,Staff:1,"Media Library":1,"Files & Docs":1,Reports:1,Settings:0}},
+  {name:"Finance",color:"#EAF3DE",tc:"#27500A",perms:{Dashboard:1,Projects:0,Finance:1,Staff:0,"Media Library":0,"Files & Docs":1,Reports:1,Settings:0}},
+  {name:"Staff",color:"#EEEDFE",tc:"#3C3489",perms:{Dashboard:1,Projects:1,Finance:0,Staff:0,"Media Library":1,"Files & Docs":1,Reports:0,Settings:0}},
+  {name:"School Admin",color:"#FAEEDA",tc:"#633806",perms:{Dashboard:1,Projects:1,Finance:0,Staff:1,"Media Library":1,"Files & Docs":1,Reports:1,Settings:0}},
+  {name:"Volunteer",color:"#F1EFE8",tc:"#444441",perms:{Dashboard:1,Projects:0,Finance:0,Staff:0,"Media Library":1,"Files & Docs":0,Reports:0,Settings:0}},
+];
+
+// RENDER FUNCTIONS
+function renderAll(){renderDepts();renderProjects();renderFinance();renderStaff();renderMedia();renderFiles();renderReports();renderRoles();renderUsers();}
+
+function renderDepts(){
+  const g=document.getElementById('dept-grid');
+  g.innerHTML=departments.map(d=>`<div class="dept-card" onclick="sendPrompt('Show me details for the ${d.name} department ↗')"><div class="dept-icon" style="background:${d.color}"><i class="ti ${d.icon}" style="color:${d.tc};font-size:20px" aria-hidden="true"></i></div><div class="dept-name">${d.name}</div><div class="dept-sub">${d.staff} staff · ${d.projects} projects</div><div class="dept-stats"><span class="dept-stat">${d.budget}</span></div></div>`).join('');
+  document.getElementById('dept-count').textContent=departments.length;
+  const dl=document.getElementById('dash-dept-list');
+  dl.innerHTML=departments.map(d=>`<div class="act-item"><div style="width:28px;height:28px;border-radius:6px;background:${d.color};display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ${d.icon}" style="color:${d.tc};font-size:14px" aria-hidden="true"></i></div><div style="flex:1;font-size:12px">${d.name}</div><span style="font-size:11px;color:var(--text-muted)">${d.staff} staff</span></div>`).join('');
+}
+
+function renderProjects(){
+  const cats=['all','healthcare','education','welfare','relief'];
+  const fb=document.getElementById('proj-filters');
+  fb.innerHTML=cats.map(c=>`<div class="filter-btn${c==='all'?' active':''}" onclick="filterProj('${c}',this)">${c.charAt(0).toUpperCase()+c.slice(1)}</div>`).join('');
+  fb.querySelectorAll('.filter-btn').forEach(b=>{b.style.cssText='padding:6px 14px;border-radius:var(--radius);font-size:12px;cursor:pointer;border:0.5px solid var(--border);background:var(--surface-2);color:var(--text-secondary);';});
+  fb.querySelector('.filter-btn').style.cssText='padding:6px 14px;border-radius:var(--radius);font-size:12px;cursor:pointer;border:0.5px solid var(--green);background:#E1F5EE;color:var(--green);';
+  renderProjGrid(projects);
+}
+
+function renderProjGrid(list){
+  document.getElementById('proj-grid').innerHTML=list.map(p=>`<div class="proj-card" onclick="openProjDetail(${p.id})"><div class="proj-hd"><div class="proj-name">${p.name}</div><span class="badge badge-${p.status==='new'?'new':p.status==='ongoing'?'ongoing':'active'}">${p.status}</span></div><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">${p.dept}</div><div class="prog-bg"><div class="prog-fill" style="width:${p.prog}%"></div></div><div style="font-size:10px;color:var(--text-muted)">${p.prog}% · PKR ${(p.spent).toLocaleString()} of PKR ${(p.budget).toLocaleString()}</div></div>`).join('');
+}
+
+let currentFilter='all';
+function filterProj(cat,el){
+  currentFilter=cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>{b.style.background='var(--surface-2)';b.style.color='var(--text-secondary)';b.style.borderColor='var(--border)';});
+  el.style.background='#E1F5EE';el.style.color='var(--green)';el.style.borderColor='var(--green)';
+  renderProjGrid(cat==='all'?projects:projects.filter(p=>p.cat===cat));
+}
+
+function openProjDetail(id){
+  const p=projects.find(x=>x.id===id);
+  document.getElementById('proj-list-view').style.display='none';
+  document.getElementById('proj-detail-view').style.display='block';
+  const pct=Math.round(p.spent/p.budget*100);
+  document.getElementById('proj-detail-content').innerHTML=`
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px">
+    <div><div style="font-size:16px;font-weight:500;color:var(--text-primary)">${p.name}</div><div style="font-size:12px;color:var(--text-muted);margin-top:3px">${p.dept} · <span class="badge badge-${p.status==='new'?'new':p.status==='ongoing'?'ongoing':'active'}">${p.status}</span></div></div>
+    <button class="btn-primary" onclick="openModal('add-proj-item',${p.id})"><i class="ti ti-plus" aria-hidden="true"></i>Add item</button>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
+    <div class="stat-card"><div class="stat-label">Total budget</div><div class="stat-value" style="font-size:16px">PKR ${p.budget.toLocaleString()}</div></div>
+    <div class="stat-card"><div class="stat-label">Spent so far</div><div class="stat-value" style="font-size:16px;color:var(--text-danger)">PKR ${p.spent.toLocaleString()}</div></div>
+    <div class="stat-card"><div class="stat-label">Remaining</div><div class="stat-value" style="font-size:16px;color:var(--text-success)">PKR ${(p.budget-p.spent).toLocaleString()}</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="section-hd"><div style="font-size:13px;font-weight:500">Budget breakdown</div></div>
+      <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:4px"><span>Budget used</span><span>${pct}%</span></div><div class="prog-bg" style="height:8px"><div class="prog-fill" style="width:${pct}%;height:8px;background:${pct>85?'var(--fill-danger)':'var(--green)'}"></div></div></div>
+      ${p.items.map(i=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--border);font-size:12px"><span>${i.name}</span><span style="color:var(--text-danger)">PKR ${i.cost.toLocaleString()}</span></div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="section-hd"><div style="font-size:13px;font-weight:500">Tasks & progress</div><button class="btn-secondary" style="font-size:11px;padding:5px 10px" onclick="openModal('add-task',${p.id})"><i class="ti ti-plus" aria-hidden="true"></i>Add task</button></div>
+      ${p.tasks.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border);font-size:12px"><div style="width:16px;height:16px;border-radius:50%;border:1.5px solid var(--green);flex-shrink:0;display:flex;align-items:center;justify-content:center"><i class="ti ti-check" style="font-size:10px;color:var(--green)" aria-hidden="true"></i></div>${t}</div>`).join('')}
+      <div style="margin-top:12px">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">Overall progress</div>
+        <div class="prog-bg" style="height:8px"><div class="prog-fill" style="width:${p.prog}%;height:8px"></div></div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">${p.prog}% complete</div>
+      </div>
+      <button class="btn-secondary" style="margin-top:12px;width:100%;justify-content:center" onclick="downloadReport('project','${p.name}')"><i class="ti ti-download" aria-hidden="true"></i>Download project report</button>
+    </div>
+  </div>`;
+}
+
+function closeDetail(){
+  document.getElementById('proj-list-view').style.display='block';
+  document.getElementById('proj-detail-view').style.display='none';
+}
+
+function renderFinance(){
+  document.getElementById('fin-body').innerHTML=transactions.map(t=>`<tr><td>${t.date}</td><td>${t.desc}</td><td>${t.type}</td><td>${t.proj}</td><td class="${t.dir==='in'?'amt-in':'amt-out'}">${t.dir==='in'?'+':'-'} PKR ${t.amount.toLocaleString()}</td></tr>`).join('');
+  let bal=0;
+  const srows=[...transactions].reverse().map(t=>{bal+=t.dir==='in'?t.amount:-t.amount;return`<tr><td>${t.date}</td><td>${t.desc}</td><td>${t.type}</td><td>${t.proj}</td><td class="${t.dir==='in'?'amt-in':'amt-out'}">${t.dir==='in'?'+':'-'} ${t.amount.toLocaleString()}</td><td>${bal.toLocaleString()}</td></tr>`;});
+  const sb=document.getElementById('sheet-body');
+  if(sb)sb.innerHTML=srows.join('');
+  const rg=document.getElementById('report-grid');
+  if(rg){const reps=[{title:"Weekly report",sub:"Last 7 days",period:"week"},{title:"Monthly report — June 2026",sub:"Full month breakdown",period:"month"},{title:"Quarterly report — Q2 2026",sub:"April to June",period:"quarter"},{title:"Annual report — 2026",sub:"Full year summary",period:"year"},{title:"Project-wise report",sub:"By project breakdown",period:"proj"},{title:"Custom date range",sub:"Choose your dates",period:"custom"}];rg.innerHTML=reps.map(r=>`<div class="rep-card"><div class="rep-info"><div class="rep-title">${r.title}</div><div class="rep-sub">${r.sub}</div></div><button class="btn-secondary" onclick="downloadReport('finance','${r.period}')"><i class="ti ti-download" aria-hidden="true"></i>Download</button></div>`).join('');}
+}
+
+function renderStaff(){
+  document.getElementById('staff-grid').innerHTML=staff.map(s=>`<div style="background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:14px"><div style="width:38px;height:38px;border-radius:50%;background:${s.color};color:${s.tc};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;margin-bottom:8px">${s.ic}</div><div style="font-size:13px;font-weight:500;color:var(--text-primary)">${s.name}</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">${s.role}</div><div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap"><span class="badge" style="background:${s.color};color:${s.tc}">${s.dept}</span><span class="badge" style="background:var(--surface-1);color:var(--text-secondary);border:0.5px solid var(--border)">${s.access}</span></div></div>`).join('');
+}
+
+function renderMedia(){
+  document.getElementById('folder-grid').innerHTML=folders.map(f=>`<div class="folder-card"><i class="ti ${f.icon}" aria-hidden="true"></i><div class="folder-name">${f.name}</div><div class="folder-count">${f.count} files</div></div>`).join('');
+  document.getElementById('media-tags').innerHTML=mediaTags.map(t=>`<span class="tag" style="cursor:pointer" onclick="this.style.background='#E1F5EE';this.style.color='var(--green)'">#${t}</span>`).join('');
+  document.getElementById('media-grid').innerHTML=mediaFiles.map(f=>`<div class="media-item"><i class="ti ${f.icon}" style="font-size:24px;color:${f.type==='video'?'#D85A30':'#185FA5'};display:block" aria-hidden="true"></i><div class="media-name">${f.name}</div><div class="media-size">${f.size}</div></div>`).join('');
+}
+
+function renderFiles(){
+  document.getElementById('files-grid').innerHTML=filesList.map(f=>`<div class="file-card"><i class="ti ${f.icon}" style="font-size:26px;color:${f.type==='folder'?'#EF9F27':f.type==='pdf'?'#D85A30':f.type==='excel'?'#0F6E56':'#185FA5'};display:block;margin-bottom:6px" aria-hidden="true"></i><div class="file-nm">${f.name}</div><div class="file-dt">${f.date}</div></div>`).join('');
+}
+
+function renderReports(){
+  const projs=[{t:"All projects summary",s:"Progress & budgets"},{t:"Project by project",s:"Individual reports"},{t:"Weekly project update",s:"Last 7 days"},{t:"Monthly report",s:"June 2026"}];
+  const fins=[{t:"Weekly finance report",s:"Last 7 days"},{t:"Monthly finance",s:"June 2026"},{t:"Annual summary",s:"Year 2026"},{t:"By project — finance",s:"Project-wise spending"}];
+  const stfs=[{t:"Staff list & roles",s:"Full directory"},{t:"Monthly attendance",s:"June 2026"},{t:"Volunteer report",s:"Current volunteers"}];
+  const dpts=[{t:"Department summary",s:"All departments"},{t:"Per department report",s:"Choose department"}];
+  document.getElementById('proj-report-list').innerHTML=projs.map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border)"><div><div style="font-size:12px;font-weight:500">${r.t}</div><div style="font-size:10px;color:var(--text-muted)">${r.s}</div></div><button class="btn-secondary" style="font-size:11px;padding:5px 10px" onclick="downloadReport('project','${r.t}')"><i class="ti ti-download" aria-hidden="true"></i>PDF</button></div>`).join('');
+  document.getElementById('fin-report-list').innerHTML=fins.map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border)"><div><div style="font-size:12px;font-weight:500">${r.t}</div><div style="font-size:10px;color:var(--text-muted)">${r.s}</div></div><button class="btn-secondary" style="font-size:11px;padding:5px 10px" onclick="downloadReport('finance','${r.t}')"><i class="ti ti-download" aria-hidden="true"></i>PDF</button></div>`).join('');
+  document.getElementById('staff-report-list').innerHTML=stfs.map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border)"><div><div style="font-size:12px;font-weight:500">${r.t}</div><div style="font-size:10px;color:var(--text-muted)">${r.s}</div></div><button class="btn-secondary" style="font-size:11px;padding:5px 10px" onclick="downloadReport('staff','${r.t}')"><i class="ti ti-download" aria-hidden="true"></i>PDF</button></div>`).join('');
+  document.getElementById('dept-report-list').innerHTML=dpts.map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border)"><div><div style="font-size:12px;font-weight:500">${r.t}</div><div style="font-size:10px;color:var(--text-muted)">${r.s}</div></div><button class="btn-secondary" style="font-size:11px;padding:5px 10px" onclick="downloadReport('dept','${r.t}')"><i class="ti ti-download" aria-hidden="true"></i>PDF</button></div>`).join('');
+}
+
+function renderRoles(){
+  document.getElementById('role-grid').innerHTML=roles.map(r=>`<div class="role-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:28px;height:28px;border-radius:6px;background:${r.color};display:flex;align-items:center;justify-content:center"><i class="ti ti-shield" style="color:${r.tc};font-size:14px" aria-hidden="true"></i></div><div class="role-name">${r.name}</div></div><div class="perm-list">${Object.entries(r.perms).map(([k,v])=>`<div class="perm-item"><span>${k}</span><span class="perm-check ${v?'perm-yes':'perm-no'}">${v?'✓':'—'}</span></div>`).join('')}</div></div>`).join('');
+}
+
+function renderUsers(){
+  document.getElementById('users-body').innerHTML=users.map(u=>`<tr><td>${u.name}</td><td style="font-family:var(--font-mono);font-size:11px">${u.username}</td><td><span class="badge" style="background:${roles.find(r=>r.name===u.role)?.color||'var(--surface-1)'};color:${roles.find(r=>r.name===u.role)?.tc||'var(--text-secondary)'}">${u.role}</span></td><td>${u.dept}</td><td><span class="badge badge-active">${u.status}</span></td></tr>`).join('');
+}
+
+// PAGE NAVIGATION
+const pageTitles={dashboard:"Dashboard",departments:"Departments",projects:"Projects",finance:"Finance & Donations",staff:"Staff & Volunteers",media:"Media Library",files:"Files & Documents",reports:"Reports",settings:"Settings"};
+function showPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+  document.getElementById('page-title').textContent=pageTitles[id]||id;
+}
+
+// FINANCE TABS
+function finTab(tab,el){
+  ['transactions','import','reports','sheet'].forEach(t=>document.getElementById('fin-'+t).style.display='none');
+  document.getElementById('fin-'+tab).style.display='block';
+  document.querySelectorAll('.fin-tab').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  if(tab==='sheet'){let bal=0;const rows=[...transactions].reverse().map(t=>{bal+=t.dir==='in'?t.amount:-t.amount;return`<tr><td>${t.date}</td><td>${t.desc}</td><td>${t.type}</td><td>${t.proj}</td><td class="${t.dir==='in'?'amt-in':'amt-out'}">${t.dir==='in'?'+':'-'} ${t.amount.toLocaleString()}</td><td>${bal.toLocaleString()}</td></tr>`;});document.getElementById('sheet-body').innerHTML=rows.join('');}
+}
+
+// SETTINGS TABS
+function settTab(tab,el){
+  ['roles','users','org'].forEach(t=>document.getElementById('sett-'+t).style.display='none');
+  document.getElementById('sett-'+tab).style.display='block';
+  document.querySelectorAll('.fin-tab').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// MODALS
+const modals={
+  'add-txn':`<div class="modal-title">Add transaction</div><div class="form-row"><div class="fg"><label class="fl">Date</label><input type="date" id="f-date" value="2026-06-28"></div><div class="fg"><label class="fl">Type</label><select id="f-type"><option>Donation (Zakat)</option><option>Donation (Sadaqah)</option><option>Donation (General)</option><option>Expense</option></select></div></div><div class="fg"><label class="fl">Description</label><input type="text" id="f-desc" placeholder="e.g. Hospital medicine purchase"></div><div class="form-row"><div class="fg"><label class="fl">Project</label><select id="f-proj"><option>Hospital</option><option>School</option><option>Water Project</option><option>Orphan Care</option><option>Vocational</option><option>Food Packs</option><option>General</option></select></div><div class="fg"><label class="fl">Amount (PKR)</label><input type="number" id="f-amount" placeholder="0"></div></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="saveTxn()">Save transaction</button></div>`,
+  'add-proj':`<div class="modal-title">New project</div><div class="fg"><label class="fl">Project name</label><input type="text" id="pn" placeholder="Enter project name"></div><div class="form-row"><div class="fg"><label class="fl">Department</label><select id="pd"><option>Healthcare</option><option>Education</option><option>Welfare</option><option>Relief</option><option>School Admin</option></select></div><div class="fg"><label class="fl">Category</label><select id="pc"><option>healthcare</option><option>education</option><option>welfare</option><option>relief</option></select></div></div><div class="form-row"><div class="fg"><label class="fl">Budget (PKR)</label><input type="number" id="pb" placeholder="0"></div><div class="fg"><label class="fl">Status</label><select id="ps"><option>active</option><option>ongoing</option><option>new</option></select></div></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="saveProj()">Create project</button></div>`,
+  'add-dept':`<div class="modal-title">Add new department</div><div class="fg"><label class="fl">Department name</label><input type="text" id="dn" placeholder="e.g. Communications"></div><div class="form-row"><div class="fg"><label class="fl">Head of dept.</label><input type="text" id="dh" placeholder="Name"></div><div class="fg"><label class="fl">Budget (PKR)</label><input type="text" id="db" placeholder="e.g. PKR 1L"></div></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="saveDept()">Add department</button></div>`,
+  'add-staff':`<div class="modal-title">Add staff / volunteer</div><div class="form-row"><div class="fg"><label class="fl">Full name</label><input type="text" id="sn" placeholder="Full name"></div><div class="fg"><label class="fl">Role</label><input type="text" id="sr" placeholder="Job title"></div></div><div class="form-row"><div class="fg"><label class="fl">Department</label><select id="sd"><option>Healthcare</option><option>Education</option><option>Finance</option><option>Welfare</option><option>Relief</option><option>School Admin</option></select></div><div class="fg"><label class="fl">Access level</label><select id="sa"><option>Staff</option><option>Manager</option><option>Finance</option><option>Admin</option><option>Volunteer</option></select></div></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="saveStaff()">Add member</button></div>`,
+  'add-user':`<div class="modal-title">Create user account</div><div class="fg"><label class="fl">Full name</label><input type="text" id="un" placeholder="Full name"></div><div class="form-row"><div class="fg"><label class="fl">Username</label><input type="text" id="uu" placeholder="name@mf"></div><div class="fg"><label class="fl">Role</label><select id="ur"><option>Admin</option><option>Manager</option><option>Finance</option><option>Staff</option><option>School Admin</option><option>Volunteer</option></select></div></div><div class="fg"><label class="fl">Department access</label><select id="udept"><option>All</option><option>Healthcare</option><option>Education</option><option>Finance</option><option>Welfare</option><option>School Admin</option><option>Relief</option></select></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="saveUser()">Create account</button></div>`,
+  'add-folder':`<div class="modal-title">New folder</div><div class="fg"><label class="fl">Folder name</label><input type="text" id="fldn" placeholder="e.g. Eid 2026 Photos"></div><div class="fg"><label class="fl">Department</label><select><option>All departments</option><option>Healthcare</option><option>Education</option><option>Welfare</option><option>Relief</option></select></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="saveFolder()">Create folder</button></div>`,
+  'upload-media':`<div class="modal-title">Upload media</div><div class="upload-zone" onclick="simulateUpload('media')"><i class="ti ti-upload" style="font-size:28px;display:block;margin-bottom:6px" aria-hidden="true"></i>Click to upload photos or videos<br><span style="font-size:10px">JPG, PNG, MP4, PDF supported</span></div><div class="fg"><label class="fl">Add tags</label><input type="text" id="mtags" placeholder="e.g. Ramadan, Orphans, Water"></div><div class="fg"><label class="fl">Folder</label><select><option>Ramadan 2026</option><option>Hospital Photos</option><option>School Events</option><option>Water Projects</option></select></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="closeModal()">Upload</button></div>`,
+  'upload-file':`<div class="modal-title">Upload file</div><div class="upload-zone" onclick="simulateUpload('file')"><i class="ti ti-upload" style="font-size:28px;display:block;margin-bottom:6px" aria-hidden="true"></i>Click to upload any file<br><span style="font-size:10px">PDF, Word, Excel, images, ZIP</span></div><div class="fg"><label class="fl">Save to folder</label><select><option>Project Reports</option><option>Finance Documents</option><option>Donor Records</option><option>Legal Documents</option></select></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="closeModal()">Upload</button></div>`,
+  'upload-folder':`<div class="modal-title">Upload folder</div><div class="upload-zone"><i class="ti ti-folder-up" style="font-size:28px;display:block;margin-bottom:6px" aria-hidden="true"></i>Click to upload entire folder<br><span style="font-size:10px">All files inside will be preserved</span></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="closeModal()">Upload</button></div>`,
+  'new-file':`<div class="modal-title">Create new file</div><div class="fg"><label class="fl">File name</label><input type="text" id="nfn" placeholder="e.g. June Report"></div><div class="form-row"><div class="fg"><label class="fl">Type</label><select id="nft"><option>Document (.docx)</option><option>Spreadsheet (.xlsx)</option><option>Note (.txt)</option></select></div><div class="fg"><label class="fl">Folder</label><select><option>Project Reports</option><option>Finance Documents</option><option>Root</option></select></div></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="saveNewFile()">Create file</button></div>`,
+};
+
+function openModal(type,extra){
+  if(type==='add-proj-item'){
+    document.getElementById('modal-inner').innerHTML=`<div class="modal-title">Add item to project</div><div class="fg"><label class="fl">Item description</label><input type="text" id="ii" placeholder="e.g. Equipment purchase"></div><div class="fg"><label class="fl">Cost (PKR)</label><input type="number" id="ic" placeholder="0"></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="saveProjItem(${extra})">Add item</button></div>`;
+  }else if(type==='add-task'){
+    document.getElementById('modal-inner').innerHTML=`<div class="modal-title">Add task</div><div class="fg"><label class="fl">Task description</label><input type="text" id="ti" placeholder="e.g. Monthly review meeting"></div><div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="saveTask(${extra})">Add task</button></div>`;
+  }else{
+    document.getElementById('modal-inner').innerHTML=modals[type]||'';
+  }
+  document.getElementById('modal').style.display='flex';
+}
+function closeModal(){document.getElementById('modal').style.display='none';}
+
+// SAVE FUNCTIONS
+function saveTxn(){
+  const d=document.getElementById('f-date').value,desc=document.getElementById('f-desc').value,type=document.getElementById('f-type').value,proj=document.getElementById('f-proj').value,amt=parseInt(document.getElementById('f-amount').value)||0;
+  if(!desc||!amt)return;
+  transactions.unshift({date:d||'2026-06-28',desc,type,proj,amount:amt,dir:type.includes('Expense')?'out':'in'});
+  renderFinance();closeModal();
+}
+function saveProj(){
+  const name=document.getElementById('pn').value;if(!name)return;
+  projects.push({id:projects.length+1,name,cat:document.getElementById('pc').value,dept:document.getElementById('pd').value,status:document.getElementById('ps').value,prog:0,budget:parseInt(document.getElementById('pb').value)||0,spent:0,items:[],tasks:[]});
+  renderProjects();closeModal();
+}
+function saveDept(){
+  const name=document.getElementById('dn').value;if(!name)return;
+  departments.push({id:departments.length+1,name,icon:"ti-building",color:"#F1EFE8",tc:"#444441",staff:0,projects:0,budget:document.getElementById('db').value||"PKR 0"});
+  renderDepts();closeModal();
+}
+function saveStaff(){
+  const name=document.getElementById('sn').value,role=document.getElementById('sr').value;if(!name)return;
+  const n=name.split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
+  staff.push({name,role,dept:document.getElementById('sd').value,access:document.getElementById('sa').value,color:"#F1EFE8",tc:"#444441",ic:n});
+  renderStaff();closeModal();
+}
+function saveUser(){
+  const name=document.getElementById('un').value,user=document.getElementById('uu').value,role=document.getElementById('ur').value,dept=document.getElementById('udept').value;if(!name)return;
+  users.push({name,username:user,role,dept,status:'active'});
+  renderUsers();closeModal();
+}
+function saveFolder(){
+  const name=document.getElementById('fldn').value;if(!name)return;
+  folders.push({name,count:0,icon:"ti-folder"});
+  renderMedia();closeModal();
+}
+function saveNewFile(){
+  const name=document.getElementById('nfn').value,type=document.getElementById('nft').value;if(!name)return;
+  const ext=type.includes('xlsx')?'.xlsx':type.includes('docx')?'.docx':'.txt';
+  const icon=type.includes('xlsx')?'ti-file-spreadsheet':type.includes('docx')?'ti-file-text':'ti-file';
+  filesList.push({name:name+ext,type:'doc',icon,date:'Jun 28'});
+  renderFiles();closeModal();
+}
+function saveProjItem(pid){
+  const p=projects.find(x=>x.id===pid);
+  const name=document.getElementById('ii').value,cost=parseInt(document.getElementById('ic').value)||0;
+  if(!name)return;
+  p.items.push({name,cost});p.spent+=cost;
+  openProjDetail(pid);closeModal();
+}
+function saveTask(pid){
+  const p=projects.find(x=>x.id===pid);
+  const t=document.getElementById('ti').value;if(!t)return;
+  p.tasks.push(t);openProjDetail(pid);closeModal();
+}
+
+function simulateUpload(type){
+  const s=document.getElementById('upload-status');
+  if(s){s.innerHTML='<div style="font-size:12px;color:var(--text-success);margin-top:8px;padding:8px;background:var(--bg-success);border-radius:var(--radius)"><i class="ti ti-check" aria-hidden="true"></i> File upload simulated — connect real backend to process files</div>';}
+}
+function downloadReport(dept,period){
+  alert('Report download: '+dept+' — '+period+'\n\nTo generate real PDF/Excel reports, this system needs to be hosted on a server. Your developer can add this feature.');
+}
+
+// CLOSE MODAL ON BG CLICK
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+renderAll();
+</script>
