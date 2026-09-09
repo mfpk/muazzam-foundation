@@ -446,6 +446,15 @@ h1,h2,h3,h4{font-family:var(--font-head);color:var(--blue-900);line-height:1.22;
 /* ---------------- Video embed frame ---------------- */
 .video-frame{position:relative;aspect-ratio:16/9;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);border:6px solid #fff}
 .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.video-frame.yt-facade{cursor:pointer}
+.video-frame.yt-facade img{width:100%;height:100%;object-fit:cover}
+.yt-play-btn{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:66px;height:66px;border-radius:50%;background:rgba(10,38,71,0.6);color:#fff;
+  display:flex;align-items:center;justify-content:center;transition:background .18s ease,transform .18s ease;
+}
+.yt-play-btn svg{width:26px;height:26px}
+.video-frame.yt-facade:hover .yt-play-btn{background:var(--gold-500);color:var(--blue-900);transform:translate(-50%,-50%) scale(1.08)}
 
 /* ---------------- Footer ---------------- */
 .site-footer{background:var(--blue-900);color:#c8d5ea;padding:70px 0 0}
