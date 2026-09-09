@@ -9,6 +9,7 @@
   document.addEventListener("DOMContentLoaded", function(){
     initHeader();
     initMobileNav();
+    initHeroSlider();
     initReveal();
     initCounters();
     initGalleryFilter();
@@ -55,6 +56,53 @@
     if(backdrop) backdrop.addEventListener("click", close);
     nav.querySelectorAll("a").forEach(function(a){ a.addEventListener("click", close); });
     window.addEventListener("keydown", function(e){ if(e.key === "Escape") close(); });
+  }
+
+  /* ---------- Hero photo slider ---------- */
+  function initHeroSlider(){
+    var slider = document.querySelector(".hero-slider");
+    if(!slider) return;
+    var slides = Array.prototype.slice.call(slider.querySelectorAll(".hero-slide"));
+    var dots = Array.prototype.slice.call(slider.querySelectorAll(".hero-dot"));
+    var prevBtn = slider.querySelector(".hero-slider-arrow.prev");
+    var nextBtn = slider.querySelector(".hero-slider-arrow.next");
+    if(slides.length < 2) return;
+    var index = 0;
+    var delay = parseInt(slider.getAttribute("data-autoplay"), 10) || 5000;
+    var timer = null;
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function show(i){
+      index = (i + slides.length) % slides.length;
+      slides.forEach(function(s, n){ s.classList.toggle("active", n === index); });
+      dots.forEach(function(d, n){
+        d.classList.toggle("active", n === index);
+        d.setAttribute("aria-selected", n === index ? "true" : "false");
+      });
+    }
+    function next(){ show(index + 1); }
+    function prev(){ show(index - 1); }
+    function start(){
+      if(reduceMotion) return;
+      stop();
+      timer = window.setInterval(next, delay);
+    }
+    function stop(){
+      if(timer){ window.clearInterval(timer); timer = null; }
+    }
+
+    if(prevBtn) prevBtn.addEventListener("click", function(){ prev(); start(); });
+    if(nextBtn) nextBtn.addEventListener("click", function(){ next(); start(); });
+    dots.forEach(function(dot, n){
+      dot.addEventListener("click", function(){ show(n); start(); });
+    });
+    slider.addEventListener("mouseenter", stop);
+    slider.addEventListener("mouseleave", start);
+    slider.addEventListener("focusin", stop);
+    slider.addEventListener("focusout", start);
+
+    show(0);
+    start();
   }
 
   /* ---------- Scroll reveal ---------- */
