@@ -61,7 +61,7 @@
 
   /* ---------- Hero photo slider ---------- */
   function initHeroSlider(){
-    var slider = document.querySelector(".hero-slider");
+    var slider = document.querySelector(".hero--slider");
     if(!slider) return;
     var slides = Array.prototype.slice.call(slider.querySelectorAll(".hero-slide"));
     var dots = Array.prototype.slice.call(slider.querySelectorAll(".hero-dot"));
