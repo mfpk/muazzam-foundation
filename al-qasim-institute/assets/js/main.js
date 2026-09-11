@@ -289,9 +289,22 @@
     var customInput = document.querySelector(".amount-custom input");
     var donateBtn = document.querySelector("[data-donate-submit]");
     var freqBtns = document.querySelectorAll(".freq-toggle button");
+    var summaryAmount = document.querySelector(".donate-summary-amount");
+    var summaryFreq = document.querySelector(".donate-summary-freq");
     if(!amountBtns.length && !donateBtn) return;
 
     var selected = null;
+
+    function updateSummary(){
+      if(summaryAmount){
+        var amount = selected || (customInput && customInput.value) || "25";
+        summaryAmount.textContent = "£" + amount;
+      }
+      if(summaryFreq){
+        var freqBtn = document.querySelector(".freq-toggle button.active");
+        summaryFreq.textContent = freqBtn && freqBtn.textContent.trim() === "Monthly" ? "every month" : "one-time";
+      }
+    }
 
     amountBtns.forEach(function(btn){
       btn.addEventListener("click", function(){
@@ -299,20 +312,24 @@
         btn.classList.add("active");
         selected = btn.getAttribute("data-amount");
         if(customInput) customInput.value = "";
+        updateSummary();
       });
     });
     if(customInput){
       customInput.addEventListener("input", function(){
         amountBtns.forEach(function(b){ b.classList.remove("active"); });
         selected = customInput.value;
+        updateSummary();
       });
     }
     freqBtns.forEach(function(btn){
       btn.addEventListener("click", function(){
         freqBtns.forEach(function(b){ b.classList.remove("active"); });
         btn.classList.add("active");
+        updateSummary();
       });
     });
+    updateSummary();
     if(donateBtn){
       donateBtn.addEventListener("click", function(e){
         e.preventDefault();
