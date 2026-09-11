@@ -98,16 +98,21 @@
       </div>
 
       <div class="sponsor-panel sponsor-panel--donate reveal" style="max-width:680px;margin:0 auto">
+        <div class="currency-toggle" role="tablist" aria-label="Donation currency">
+          <button type="button" class="active" role="tab" aria-selected="true" data-currency="GBP"><span class="flag">🇬🇧</span> UK Donation</button>
+          <button type="button" role="tab" aria-selected="false" data-currency="PKR"><span class="flag">🇵🇰</span> PK Donation</button>
+        </div>
+
         <div class="freq-toggle" role="tablist" aria-label="Donation frequency">
           <button type="button" class="active" role="tab" aria-selected="true">One-Time</button>
           <button type="button" role="tab" aria-selected="false">Monthly</button>
         </div>
 
         <div class="amount-grid">
-          <button type="button" class="amount-btn" data-amount="10">£10</button>
-          <button type="button" class="amount-btn active" data-amount="25">£25</button>
-          <button type="button" class="amount-btn" data-amount="50">£50</button>
-          <button type="button" class="amount-btn" data-amount="100">£100</button>
+          <button type="button" class="amount-btn" data-gbp="10" data-pkr="1000">£10</button>
+          <button type="button" class="amount-btn active" data-gbp="25" data-pkr="2500">£25</button>
+          <button type="button" class="amount-btn" data-gbp="50" data-pkr="5000">£50</button>
+          <button type="button" class="amount-btn" data-gbp="100" data-pkr="10000">£100</button>
           <div class="amount-custom">
             <span>£</span>
             <input type="number" min="1" placeholder="Custom amount" aria-label="Custom donation amount"/>

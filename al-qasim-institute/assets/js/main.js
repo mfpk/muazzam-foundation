@@ -287,18 +287,35 @@
   function initDonationForm(){
     var amountBtns = document.querySelectorAll(".amount-btn");
     var customInput = document.querySelector(".amount-custom input");
+    var customSymbol = document.querySelector(".amount-custom span");
     var donateBtn = document.querySelector("[data-donate-submit]");
     var freqBtns = document.querySelectorAll(".freq-toggle button");
+    var currencyBtns = document.querySelectorAll(".currency-toggle button");
     var summaryAmount = document.querySelector(".donate-summary-amount");
     var summaryFreq = document.querySelector(".donate-summary-freq");
     if(!amountBtns.length && !donateBtn) return;
 
+    var symbols = { GBP: "£", PKR: "₨" };
+    var currency = "GBP";
     var selected = null;
+
+    function activeAmountBtn(){
+      return document.querySelector(".amount-btn.active");
+    }
+
+    function renderAmounts(){
+      amountBtns.forEach(function(btn){
+        var val = btn.getAttribute("data-" + currency.toLowerCase());
+        if(val) btn.textContent = symbols[currency] + val;
+      });
+      if(customSymbol) customSymbol.textContent = symbols[currency];
+    }
 
     function updateSummary(){
       if(summaryAmount){
-        var amount = selected || (customInput && customInput.value) || "25";
-        summaryAmount.textContent = "£" + amount;
+        var fallback = activeAmountBtn();
+        var amount = selected || (customInput && customInput.value) || (fallback && fallback.getAttribute("data-" + currency.toLowerCase())) || "25";
+        summaryAmount.textContent = symbols[currency] + amount;
       }
       if(summaryFreq){
         var freqBtn = document.querySelector(".freq-toggle button.active");
@@ -310,7 +327,7 @@
       btn.addEventListener("click", function(){
         amountBtns.forEach(function(b){ b.classList.remove("active"); });
         btn.classList.add("active");
-        selected = btn.getAttribute("data-amount");
+        selected = btn.getAttribute("data-" + currency.toLowerCase());
         if(customInput) customInput.value = "";
         updateSummary();
       });
@@ -329,18 +346,32 @@
         updateSummary();
       });
     });
+    currencyBtns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        currencyBtns.forEach(function(b){ b.classList.remove("active"); });
+        btn.classList.add("active");
+        currency = btn.getAttribute("data-currency");
+        renderAmounts();
+        selected = null;
+        if(customInput) customInput.value = "";
+        updateSummary();
+      });
+    });
+    renderAmounts();
     updateSummary();
     if(donateBtn){
       donateBtn.addEventListener("click", function(e){
         e.preventDefault();
-        var amount = selected || (customInput && customInput.value) || "25";
-        handleDonateSubmit(amount);
+        var fallback = activeAmountBtn();
+        var amount = selected || (customInput && customInput.value) || (fallback && fallback.getAttribute("data-" + currency.toLowerCase())) || "25";
+        handleDonateSubmit(amount, currency);
       });
     }
   }
-  function handleDonateSubmit(amount){
+  function handleDonateSubmit(amount, currency){
+    var symbol = currency === "PKR" ? "₨" : "£";
     // Placeholder action — replace with a real payment gateway redirect/API call.
-    alert("Thank you for choosing to donate £" + amount + ". Connect this button to your payment gateway (Stripe / PayPal / JazzCash / Easypaisa) to complete secure processing.");
+    alert("Thank you for choosing to donate " + symbol + amount + ". Connect this button to your payment gateway (Stripe / PayPal / JazzCash / Easypaisa) to complete secure processing.");
   }
 
   /* ---------- Contact form (client-side placeholder) ----------
