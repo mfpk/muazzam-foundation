@@ -97,10 +97,10 @@
         <p class="section-sub center">Every contribution, big or small, can make a meaningful difference.</p>
       </div>
 
-      <div class="sponsor-panel reveal" style="max-width:680px;margin:0 auto">
+      <div class="sponsor-panel sponsor-panel--donate reveal" style="max-width:680px;margin:0 auto">
         <div class="freq-toggle" role="tablist" aria-label="Donation frequency">
-          <button type="button" class="active">One-Time</button>
-          <button type="button">Monthly</button>
+          <button type="button" class="active" role="tab" aria-selected="true">One-Time</button>
+          <button type="button" role="tab" aria-selected="false">Monthly</button>
         </div>
 
         <div class="amount-grid">
@@ -114,21 +114,25 @@
           </div>
         </div>
 
-        <button type="button" class="btn btn-primary btn-block" data-donate-submit>
+        <p class="donate-summary">You're giving <strong><span class="donate-summary-amount">£25</span></strong> <span class="donate-summary-freq">one-time</span></p>
+
+        <button type="button" class="btn btn-primary btn-block btn-lg" data-donate-submit>
           Donate Now
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 1 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8Z"/></svg>
         </button>
 
-        <div class="trust-badges">
+        <div class="trust-bar">
           <span class="item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Secure &amp; confidential</span>
+          <span class="divider"></span>
           <span class="item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> 100% goes to the children</span>
+          <span class="divider"></span>
           <span class="item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4.5 8-11V5l-8-3-8 3v6c0 6.5 8 11 8 11Z"/></svg> Trusted charity</span>
         </div>
-        <p class="form-note">
-          This is a demo donation form. Connect the "Donate Now" button to your payment processor
-          (Stripe, PayPal, JazzCash, Easypaisa, or bank transfer) to accept live payments —
-          see <code>assets/js/main.js</code> → <code>handleDonateSubmit()</code>.
+
+        <p class="demo-notice">
+          <span class="demo-badge">Demo</span> Payments aren't live yet — connect a payment processor to accept real donations.
         </p>
+        <!-- Wire this up in assets/js/main.js -> handleDonateSubmit() with Stripe, PayPal, JazzCash, Easypaisa, or bank transfer. -->
       </div>
     </div>
   </section>
