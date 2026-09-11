@@ -318,6 +318,31 @@ h1,h2,h3,h4{font-family:var(--font-head);color:var(--blue-900);line-height:1.22;
 .feature-card h3{font-size:18px;margin-bottom:6px}
 .feature-card p{color:var(--ink-soft);font-size:14.5px}
 
+/* ---------------- Our Team ---------------- */
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+@media(max-width:900px){.team-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.team-grid{grid-template-columns:1fr;max-width:320px;margin-inline:auto}}
+.team-card{
+  background:#fff;border:1px solid var(--grey-200);border-radius:var(--radius-lg);overflow:hidden;
+  box-shadow:var(--shadow-sm);text-align:center;transition:box-shadow .2s ease,transform .2s ease;
+}
+.team-card:hover{box-shadow:var(--shadow-md);transform:translateY(-4px)}
+.team-photo{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.team-info{padding:20px 18px 24px}
+.team-info h3{font-size:17.5px;margin-bottom:4px}
+.team-role{
+  font-family:var(--font-head);font-weight:700;font-size:12.5px;color:var(--gold-600);
+  text-transform:uppercase;letter-spacing:.04em;margin-bottom:14px;
+}
+.team-social{display:flex;justify-content:center;gap:10px}
+.team-social a{
+  width:32px;height:32px;border-radius:50%;background:var(--grey-100);
+  display:flex;align-items:center;justify-content:center;color:var(--blue-800);
+  transition:background .18s ease,color .18s ease;
+}
+.team-social a:hover{background:var(--blue-900);color:#fff}
+.team-social svg{width:15px;height:15px}
+
 /* ---------------- CTA banner ---------------- */
 .cta-banner{
   position:relative;border-radius:var(--radius-lg);overflow:hidden;
